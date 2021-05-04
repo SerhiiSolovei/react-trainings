@@ -1,10 +1,10 @@
 const PostList = (props) => {
-    const {posts, postsHandler} = props
-    
+    const {posts} = props
+    console.log(posts)
     return <section>
        {posts.map(post => {
            return <article>
-               <h3 onClick={postsHandler()}>{post.title}</h3>
+               <h3>{post.title} <span>edit post</span></h3>
                <time dateTime={post.date}>{post.date}</time>
                <p>{post.content}</p>
         </article>

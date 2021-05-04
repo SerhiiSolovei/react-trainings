@@ -1,22 +1,47 @@
+import React from 'react';
+import { Switch, Route } from "react-router-dom";
+
+import  * as Routes  from '../constants/Routes';
+
 import Header from './Header'
 import PostList from './PostList'
+import CreateForm from './Posts/CreateForm'
 
-import myPosts from '../posts.json' 
+import myPosts from '../constants/posts.json' 
 
 import styles from './App.module.scss'; 
 
-function App() {
+class App extends React.Component {
+    state = {
+        posts: myPosts
+    }
 
-  const myBeautifulHandler = () => {
-    console.log('Do you wanna know how i had these scars?')
+  addNewPost = (newPost) => {
+      this.setState((prevState) => ({
+        ...prevState,
+        posts: [...prevState.posts, newPost]
+      }))
   }
 
-  return (
-    <div className={styles.Container}>
-        <Header />
-        <PostList posts={myPosts} postsHandler={myBeautifulHandler} />
-    </div>
-  );
+  render () {
+    return (
+        <div className={styles.Container}>
+            <Header />
+    
+            <Switch>
+                <Route path={Routes.RECOMMENDATIONS}>Рекомендации от профанов</Route>
+                <Route path={Routes.AUTHORS}>Информация об Авторах</Route>
+                <Route path={Routes.POST_CREATION}>
+                    <CreateForm createPost={this.addNewPost}/>
+                </Route>
+                <Route path="/">
+                    <PostList posts={this.state.posts} />
+                </Route>
+    
+            </Switch>
+        </div>
+      );
+  }
 }
 
 export default App;

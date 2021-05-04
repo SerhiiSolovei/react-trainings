@@ -1,0 +1,22 @@
+.Form {
+  display: flex;
+  flex-direction: column;
+}
+
+.InputLabel {
+  margin-bottom: 12px;
+}
+
+.Input {
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid;
+  padding: 8px 12px;
+}
+
+.TextArea {
+  border-radius: 4px;
+  border: 1px solid;
+  padding: 8px 12px;
+  resize: vertical;
+}
