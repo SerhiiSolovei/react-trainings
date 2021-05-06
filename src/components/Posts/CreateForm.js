@@ -19,14 +19,19 @@ class CreateForm extends React.Component {
                     <input id="title" value={this.state.title} onChange={e => this.setState({title: e.target.value})} placeholder="Введите заголовок..."  className={styles.Input}/>
 
                     <textarea id="content" value={this.state.content} onChange={e => this.setState({content: e.target.value})} placeholder="Новый замечательный пост..."  className={styles.TextArea} />
-                    
+
                     <button type="button" onClick={() => this.setState({title: "", content: ''})}>Отменить</button>
-                    <button type="button" onClick={() => createPost({
-                        title: this.state.title,
-                        content: this.state.content,
-                        date: new Date().toString(),
-                        author: "board-game-bastard",
-                    })}>Сохранить</button>
+                    <button type="button" onClick={() => {
+                            createPost({
+                            id: Math.floor(Math.random()*1000 + 3).toString(),
+                            title: this.state.title,
+                            content: this.state.content,
+                            date: new Date().toString(),
+                            author: "board-game-bastard"
+                            })
+                        this.setState({title: "", content: ''})
+                        }
+                    }>Сохранить</button>
                 </form>
             </div>
         )
