@@ -25,7 +25,20 @@ class App extends React.Component {
       }))
   }
 
+  updatePost = (post) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      posts: prevState.posts.map((oldPost) => {
+          if (oldPost.id === post.id) {
+              return post
+          }
+          return oldPost
+      })
+    }))
+}
+
   render () {
+    
     return (
         <div className={styles.Container}>
             <Header />
@@ -37,12 +50,12 @@ class App extends React.Component {
                     <CreateForm createPost={this.addNewPost}/>
                 </Route>
                 <Route path={Routes.EDIT_POST}
-                       render={({match}) => {
+                       render={({match, history}) => {
                          const { id } = match.params;
-                         return <EditForm postId={id} posts={this.state.posts} changePost={this.addNewPost}/>
+                         return <EditForm postId={id} posts={this.state.posts} changePost={this.updatePost} history={history}/>
                        }
                 }/>
-                <Route path="/">
+                <Route path={Routes.MAIN}>
                     <PostList posts={this.state.posts} />
                 </Route>
 
