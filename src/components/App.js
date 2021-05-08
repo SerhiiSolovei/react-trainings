@@ -54,6 +54,13 @@ class App extends React.Component {
     }));
   };
 
+  deletedPost = postId => {
+    this.setState(prevState => ({
+      ...prevState,
+      posts: prevState.posts.filter(post => postId !== post.id),
+    }));
+  };
+
   render() {
     return (
       <div className={styles.Container}>
@@ -73,7 +80,7 @@ class App extends React.Component {
             }}
           />
           <Route path={Routes.MAIN}>
-            <PostList posts={this.state.posts} />
+            <PostList posts={this.state.posts} deletePost={this.deletedPost} />
           </Route>
         </Switch>
       </div>

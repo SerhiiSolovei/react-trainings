@@ -11,7 +11,7 @@ class PostList extends React.Component {
   };
 
   render() {
-    const { posts } = this.props;
+    const { posts, deletePost } = this.props;
 
     const postsByAuthor =
       this.state.selectedAuthor !== '' ? posts.filter(post => post.author === this.state.selectedAuthor) : posts;
@@ -40,6 +40,9 @@ class PostList extends React.Component {
                   <Link to={Routes.EDIT_POST.replace(':id', post.id)}>
                     <span className={styles.EditLink}>изменить</span>
                   </Link>
+                  <button type="button" onClick={() => deletePost(post.id)}>
+                    удалить
+                  </button>
                 </h3>
                 <time dateTime="">---</time>
                 <p>{post.content}</p>
