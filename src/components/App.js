@@ -76,7 +76,15 @@ class App extends React.Component {
             path={Routes.EDIT_POST}
             render={({ match, history }) => {
               const { id } = match.params;
-              return <EditForm postId={id} posts={this.state.posts} changePost={this.updatePost} history={history} />;
+              return (
+                <EditForm
+                  postId={id}
+                  posts={this.state.posts}
+                  changePost={this.updatePost}
+                  deletePost={this.deletedPost}
+                  history={history}
+                />
+              );
             }}
           />
           <Route path={Routes.MAIN}>

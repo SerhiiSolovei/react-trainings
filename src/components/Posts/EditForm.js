@@ -16,7 +16,7 @@ class EditForm extends React.Component {
   }
 
   render() {
-    const { postId, changePost, history } = this.props;
+    const { postId, changePost, history, deletePost } = this.props;
 
     return (
       <div>
@@ -59,6 +59,15 @@ class EditForm extends React.Component {
             }}
           >
             Сохранить
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              deletePost(postId);
+              history.push(Routes.MAIN);
+            }}
+          >
+            Удалить
           </button>
         </form>
       </div>
