@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import * as Routes from '../constants/Routes';
+import ConfirmMessage from './ConfirmMessage';
 
 import styles from './PostList.module.scss';
 
@@ -8,8 +9,23 @@ class PostList extends React.Component {
   state = {
     searchValue: '',
     selectedAuthor: '',
+    showConfirmMessage: false,
+    postId: null,
   };
 
+  showConfirm = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      showConfirmMessage: true,
+    }));
+  };
+
+  closeConfirm = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      showConfirmMessage: false,
+    }));
+  };
   render() {
     const { posts, deletePost } = this.props;
 
@@ -20,7 +36,7 @@ class PostList extends React.Component {
     );
 
     return (
-      <section>
+      <section className={styles.PostsSection}>
         <input value={this.state.searchValue} onChange={e => this.setState({ searchValue: e.target.value })} />
         <select
           value={this.state.selectedAuthor}
@@ -43,7 +59,12 @@ class PostList extends React.Component {
                   <button
                     type="button"
                     onClick={() => {
-                      if (window.confirm('Ты действительно хочешь удалить пост?')) deletePost(post.id);
+                      // deletePost(post.id);
+                      this.setState(prevState => ({
+                        ...prevState,
+                        postId: post.id,
+                      }));
+                      this.showConfirm();
                     }}
                   >
                     удалить
@@ -57,6 +78,12 @@ class PostList extends React.Component {
         ) : (
           <div>Постов не найдено</div>
         )}
+        <ConfirmMessage
+          show={this.state.showConfirmMessage}
+          deletePost={deletePost}
+          postId={this.state.postId}
+          closeConfirm={this.closeConfirm}
+        />
       </section>
     );
   }
