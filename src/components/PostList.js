@@ -40,7 +40,12 @@ class PostList extends React.Component {
                   <Link to={Routes.EDIT_POST.replace(':id', post.id)}>
                     <span className={styles.EditLink}>изменить</span>
                   </Link>
-                  <button type="button" onClick={() => deletePost(post.id)}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm('Ты действительно хочешь удалить пост?')) deletePost(post.id);
+                    }}
+                  >
                     удалить
                   </button>
                 </h3>
