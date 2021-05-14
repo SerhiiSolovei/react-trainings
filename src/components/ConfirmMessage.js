@@ -1,8 +1,8 @@
 import styles from './ConfirmMessage.module.scss';
 
 const ConfirmMessage = ({ show, deletePost, postId, closeConfirm }) => {
-  if (show === true) {
-    return (
+  return (
+    show && (
       <div className={styles.ConfirmBlock}>
         Ты точно хочешь удалить этот замечательный пост?
         <div className={styles.Buttons}>
@@ -20,9 +20,7 @@ const ConfirmMessage = ({ show, deletePost, postId, closeConfirm }) => {
           </button>
         </div>
       </div>
-    );
-  } else {
-    return null;
-  }
+    )
+  );
 };
 export default ConfirmMessage;

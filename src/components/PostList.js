@@ -59,7 +59,6 @@ class PostList extends React.Component {
                   <button
                     type="button"
                     onClick={() => {
-                      // deletePost(post.id);
                       this.setState(prevState => ({
                         ...prevState,
                         postId: post.id,

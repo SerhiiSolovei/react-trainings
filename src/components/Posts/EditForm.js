@@ -10,8 +10,8 @@ class EditForm extends React.Component {
     const post = posts.find(post => post.id === postId);
 
     this.state = {
-      title: post.title,
-      content: post.content,
+      title: post?.title || '',
+      content: post?.content || '',
     };
   }
 
@@ -32,7 +32,6 @@ class EditForm extends React.Component {
             placeholder="Введите заголовок..."
             className={styles.Input}
           />
-
           <textarea
             id="content"
             value={this.state.content}
@@ -40,7 +39,6 @@ class EditForm extends React.Component {
             placeholder="Новый замечательный пост..."
             className={styles.TextArea}
           />
-
           <button type="button" onClick={() => history.push(Routes.MAIN)}>
             Отменить
           </button>
