@@ -9,6 +9,9 @@ import PostList from './PostList';
 import CreateForm from './Posts/CreateForm';
 import EditForm from './Posts/EditForm';
 
+import Login from './auth/Login';
+import Registration from './auth/Registration';
+
 import styles from './App.module.scss';
 
 class App extends React.Component {
@@ -87,6 +90,12 @@ class App extends React.Component {
               );
             }}
           />
+          <Route path={Routes.LOGIN}>
+            <Login />
+          </Route>
+          <Route path={Routes.REGISTRATION}>
+            <Registration />
+          </Route>
           <Route path={Routes.MAIN}>
             <PostList posts={this.state.posts} deletePost={this.deletedPost} />
           </Route>

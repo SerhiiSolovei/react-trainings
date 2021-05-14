@@ -1,3 +1,6 @@
+export const LOGIN = '/sign-in';
+export const REGISTRATION = '/sign-up';
+
 export const RECOMMENDATIONS = '/recommendations';
 export const MAIN = '/';
 export const AUTHORS = '/authors';

@@ -18,6 +18,12 @@ const Header = () => {
       <li className={styles.Link}>
         <Link to={Routes.POST_CREATION}>Написать новый пост</Link>
       </li>
+      <li className={styles.Link}>
+        <Link to={Routes.LOGIN}>Войти</Link>
+      </li>
+      <li className={styles.Link}>
+        <Link to={Routes.REGISTRATION}>Зарегестрироваться</Link>
+      </li>
     </ul>
   );
 };
