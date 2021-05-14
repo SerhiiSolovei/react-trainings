@@ -9,7 +9,15 @@
 
 .Input {
   border-radius: 4px;
-  margin-bottom: 20px;
   border: 1px solid;
   padding: 8px 12px;
+}
+
+.Input:first-of-type {
+  margin-bottom: 20px;
+}
+
+
+.Checkbox {
+  margin-bottom: 20px;
 }
