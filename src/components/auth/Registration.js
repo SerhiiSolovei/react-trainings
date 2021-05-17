@@ -1,7 +1,9 @@
 import React from 'react';
 import firebase from 'firebase/app';
 
-import { validateEmail, validatePassword } from './utils';
+import { validateEmail, validatePassword, lowerCaseLetters, upperCaseLetters, numbers } from './utils';
+
+import PasswordMessage from './PasswordMessage';
 
 import styles from './styles.module.scss';
 
@@ -12,6 +14,12 @@ class Registration extends React.Component {
     confirmPassword: '',
     showPassword: false,
     showPasswordConfirmField: false,
+    validPassword: false,
+    inputPassword: false,
+    containLowerCaseLetter: false,
+    containUpperCaseLetter: false,
+    containNumber: false,
+    containMinCharNumber: false,
   };
 
   registerUser = () => {
@@ -20,7 +28,7 @@ class Registration extends React.Component {
       return;
     }
 
-    if (!validatePassword(this.state.password)) {
+    if (!this.state.password.match(validatePassword)) {
       alert('Ошибочно созданный пароль');
       return;
     }
@@ -63,6 +71,17 @@ class Registration extends React.Component {
     }));
   };
 
+  validationChecking = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      validPassword: this.state.password.match(validatePassword) ? true : false,
+      containLowerCaseLetter: this.state.password.match(lowerCaseLetters) ? true : false,
+      containUpperCaseLetter: this.state.password.match(upperCaseLetters) ? true : false,
+      containNumber: this.state.password.match(numbers) ? true : false,
+      containMinCharNumber: this.state.password.length >= 6 ? true : false,
+    }));
+  };
+
   render() {
     return (
       <div className={styles.Form}>
@@ -81,13 +100,19 @@ class Registration extends React.Component {
         <label htmlFor="password" className={styles.InputLabel}>
           Пароль
         </label>
+        <PasswordMessage state={this.state} />
         <input
           id="password"
           value={this.state.password}
           type={this.state.showPassword ? 'text' : 'password'}
-          onChange={e => this.setState({ password: e.target.value })}
+          onChange={e => {
+            this.setState({ password: e.target.value });
+          }}
+          onKeyUp={this.validationChecking}
+          onFocus={() => this.setState({ inputPassword: true })}
+          onBlur={() => this.setState({ inputPassword: false })}
           placeholder="Пароль..."
-          className={styles.Input}
+          className={this.state.validPassword ? styles.ValidPassword : styles.InvalidPassword}
           required
         />
         <div className={styles.Checkbox}>
