@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import * as Routes from '../constants/Routes';
 import ConfirmMessage from './ConfirmMessage';
 
+import { FirebaseContext } from './services/FirebaseProvider';
+
 import styles from './PostList.module.scss';
 
 class PostList extends React.Component {
@@ -53,21 +55,29 @@ class PostList extends React.Component {
               <article>
                 <h3>
                   {post.title}
-                  <Link to={Routes.EDIT_POST.replace(':id', post.id)}>
-                    <span className={styles.EditLink}>изменить</span>
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      this.setState(prevState => ({
-                        ...prevState,
-                        postId: post.id,
-                      }));
-                      this.showConfirm();
-                    }}
-                  >
-                    удалить
-                  </button>
+                  <FirebaseContext.Consumer>
+                    {({ authenticated }) =>
+                      authenticated && (
+                        <>
+                          <Link to={Routes.EDIT_POST.replace(':id', post.id)}>
+                            <span className={styles.EditLink}>изменить</span>
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              this.setState(prevState => ({
+                                ...prevState,
+                                postId: post.id,
+                              }));
+                              this.showConfirm();
+                            }}
+                          >
+                            удалить
+                          </button>
+                        </>
+                      )
+                    }
+                  </FirebaseContext.Consumer>
                 </h3>
                 <time dateTime="">---</time>
                 <p>{post.content}</p>

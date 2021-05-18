@@ -2,7 +2,9 @@ import styles from './ConfirmMessage.module.scss';
 
 import PropTypes from 'prop-types';
 
-const ConfirmMessage = ({ show, deletePost, postId, closeConfirm }) => {
+const noop = () => {};
+
+const ConfirmMessage = ({ show = false, deletePost = noop, postId, closeConfirm = noop }) => {
   return (
     show && (
       <div className={styles.ConfirmBlock}>
@@ -27,7 +29,7 @@ const ConfirmMessage = ({ show, deletePost, postId, closeConfirm }) => {
 };
 
 ConfirmMessage.propTypes = {
-  show: PropTypes.bool.isRequired,
+  show: PropTypes.bool,
   deletePost: PropTypes.func,
   postId: PropTypes.string,
   closeConfirm: PropTypes.func,
