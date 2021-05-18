@@ -1,5 +1,7 @@
 import styles from './ConfirmMessage.module.scss';
 
+import PropTypes from 'prop-types';
+
 const ConfirmMessage = ({ show, deletePost, postId, closeConfirm }) => {
   return (
     show && (
@@ -23,4 +25,12 @@ const ConfirmMessage = ({ show, deletePost, postId, closeConfirm }) => {
     )
   );
 };
+
+ConfirmMessage.propTypes = {
+  show: PropTypes.bool.isRequired,
+  deletePost: PropTypes.func,
+  postId: PropTypes.string,
+  closeConfirm: PropTypes.func,
+};
+
 export default ConfirmMessage;
