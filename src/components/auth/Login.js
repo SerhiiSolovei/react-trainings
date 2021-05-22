@@ -2,6 +2,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 
 import { validateEmail } from './utils';
+import Input from '../ReusableComponents/Input';
 
 import styles from './styles.module.scss';
 
@@ -33,28 +34,24 @@ class Login extends React.Component {
   render() {
     return (
       <div className={styles.Form}>
-        <label htmlFor="email" className={styles.InputLabel}>
-          Почта
-        </label>
-        <input
-          id="email"
+        <Input
+          label={'Почта'}
+          id={'email'}
           value={this.state.email}
           onChange={e => this.setState({ email: e.target.value })}
-          placeholder="example@email.com"
-          className={styles.Input}
-        />
-        <label htmlFor="password" className={styles.InputLabel}>
-          Пароль
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={this.state.password}
-          onChange={e => this.setState({ password: e.target.value })}
-          placeholder="Пароль..."
+          placeholder={'example@email.com'}
           className={styles.Input}
         />
 
+        <Input
+          label={'Пароль'}
+          id={'password'}
+          value={this.state.password}
+          type={'password'}
+          onChange={e => this.setState({ password: e.target.value })}
+          placeholder={'Пароль...'}
+          className={styles.Input}
+        />
         <button onClick={this.loginUser}>Войти</button>
       </div>
     );

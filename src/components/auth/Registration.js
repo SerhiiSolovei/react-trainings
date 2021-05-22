@@ -2,6 +2,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 
 import { validateEmail, validatePassword, lowerCaseLetters, upperCaseLetters, numbers } from './utils';
+import Input from '../ReusableComponents/Input';
 
 import PasswordMessage from './PasswordMessage';
 
@@ -85,52 +86,42 @@ class Registration extends React.Component {
   render() {
     return (
       <div className={styles.Form}>
-        <label htmlFor="email" className={styles.InputLabel}>
-          Почта
-        </label>
-        <input
-          id="email"
+        <Input
+          label={'Почта'}
+          id={'email'}
           value={this.state.email}
           onChange={e => this.setState({ email: e.target.value })}
-          placeholder="example@email.com"
+          placeholder={'example@email.com'}
           className={styles.Input}
-          required
         />
 
-        <label htmlFor="password" className={styles.InputLabel}>
-          Пароль
-        </label>
         <PasswordMessage state={this.state} />
-        <input
-          id="password"
+
+        <Input
+          label={'Пароль'}
+          id={'password'}
           value={this.state.password}
           type={this.state.showPassword ? 'text' : 'password'}
-          onChange={e => {
-            this.setState({ password: e.target.value });
-          }}
+          onChange={e => this.setState({ password: e.target.value })}
           onKeyUp={this.validationChecking}
           onFocus={() => this.setState({ inputPassword: true })}
           onBlur={() => this.setState({ inputPassword: false })}
-          placeholder="Пароль..."
+          placeholder={'Пароль...'}
           className={this.state.validPassword ? styles.ValidPassword : styles.InvalidPassword}
-          required
         />
         <div className={styles.Checkbox}>
           <input type="checkbox" onClick={this.togglePasswordVisibility} />
           Показать пароль
         </div>
 
-        <label htmlFor="confirmPassword" className={styles.InputLabel}>
-          Подтвердите Пароль
-        </label>
-        <input
-          id="confirmPassword"
+        <Input
+          label={'Подтвердите Пароль'}
+          id={'confirmPassword'}
           value={this.state.confirmPassword}
           type={this.state.showPasswordConfirmField ? 'text' : 'password'}
           onChange={e => this.setState({ confirmPassword: e.target.value })}
-          placeholder="Подтвердите Пароль..."
+          placeholder={'Подтвердите Пароль...'}
           className={styles.Input}
-          required
         />
         <div className={styles.Checkbox}>
           <input type="checkbox" onClick={this.togglePasswordConfirmVisibility} />

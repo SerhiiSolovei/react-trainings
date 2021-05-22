@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import * as Routes from '../constants/Routes';
 import ConfirmMessage from './ConfirmMessage';
+import Input from './ReusableComponents/Input';
 
 import { FirebaseContext } from './services/FirebaseProvider';
 
@@ -39,7 +40,11 @@ class PostList extends React.Component {
 
     return (
       <section className={styles.PostsSection}>
-        <input value={this.state.searchValue} onChange={e => this.setState({ searchValue: e.target.value })} />
+        <Input
+          value={this.state.searchValue}
+          onChange={e => this.setState({ searchValue: e.target.value })}
+          placeholder={'Поиск по заголовку'}
+        />
         <select
           value={this.state.selectedAuthor}
           onChange={e => this.setState({ selectedAuthor: e.target.value, searchValue: '' })}

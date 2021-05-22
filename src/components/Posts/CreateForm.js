@@ -1,6 +1,8 @@
 import React from 'react';
 import firebase from 'firebase/app';
 
+import Input from '../ReusableComponents/Input';
+
 import styles from './CreateForm.module.scss';
 
 class CreateForm extends React.Component {
@@ -15,17 +17,13 @@ class CreateForm extends React.Component {
       <div>
         <h3>Создать новый пост</h3>
         <form className={styles.Form}>
-          <label htmlFor="title" className={styles.InputLabel}>
-            Заголовок
-          </label>
-          <input
-            id="title"
+          <Input
+            label={'Заголовок'}
+            id={'title'}
             value={this.state.title}
             onChange={e => this.setState({ title: e.target.value })}
-            placeholder="Введите заголовок..."
-            className={styles.Input}
+            placeholder={'Введите заголовок...'}
           />
-
           <textarea
             id="content"
             value={this.state.content}

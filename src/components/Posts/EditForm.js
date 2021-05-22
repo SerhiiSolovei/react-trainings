@@ -1,6 +1,8 @@
 import React from 'react';
 import * as Routes from '../../constants/Routes';
 
+import Input from '../ReusableComponents/Input';
+
 import styles from './CreateForm.module.scss';
 
 class EditForm extends React.Component {
@@ -22,15 +24,12 @@ class EditForm extends React.Component {
       <div>
         <h3>Изменение поста</h3>
         <form className={styles.Form}>
-          <label htmlFor="title" className={styles.InputLabel}>
-            Заголовок
-          </label>
-          <input
-            id="title"
+          <Input
+            label={'Заголовок'}
+            id={'title'}
             value={this.state.title}
             onChange={e => this.setState({ title: e.target.value })}
-            placeholder="Введите заголовок..."
-            className={styles.Input}
+            placeholder={'Введите заголовок...'}
           />
           <textarea
             id="content"
