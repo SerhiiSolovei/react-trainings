@@ -107,7 +107,7 @@ class Registration extends React.Component {
           onFocus={() => this.setState({ inputPassword: true })}
           onBlur={() => this.setState({ inputPassword: false })}
           placeholder={'Пароль...'}
-          className={this.state.validPassword ? styles.ValidPassword : styles.InvalidPassword}
+          inputClassName={this.state.validPassword ? styles.ValidPassword : styles.InvalidPassword}
         />
         <div className={styles.Checkbox}>
           <input type="checkbox" onClick={this.togglePasswordVisibility} />
@@ -121,7 +121,7 @@ class Registration extends React.Component {
           type={this.state.showPasswordConfirmField ? 'text' : 'password'}
           onChange={e => this.setState({ confirmPassword: e.target.value })}
           placeholder={'Подтвердите Пароль...'}
-          className={styles.Input}
+          inputClassName={styles.Input}
         />
         <div className={styles.Checkbox}>
           <input type="checkbox" onClick={this.togglePasswordConfirmVisibility} />

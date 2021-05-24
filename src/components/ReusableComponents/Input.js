@@ -1,38 +1,22 @@
 import styles from './Input.module.scss';
 
-const func = () => {};
-
 const Input = ({
   label = null,
   id = null,
   value,
   type = 'text',
-  onChange = func,
-  placeholder,
-  inputClassName = styles.Input,
-  labelClassName = styles.InputLabel,
-  onKeyUp = func,
-  onFocus = func,
-  onBlur = func,
+  inputClassName = '',
+  labelClassName = '',
+  ...rest
 }) => {
   return (
     <>
       {label !== null ? (
-        <label htmlFor={id} className={labelClassName}>
+        <label htmlFor={id} className={`${styles.InputLabel} ${labelClassName}`}>
           {label}
         </label>
       ) : null}
-      <input
-        id={id}
-        value={value}
-        type={type}
-        placeholder={placeholder}
-        onChange={onChange}
-        className={inputClassName}
-        onKeyUp={onKeyUp}
-        onFocus={onFocus}
-        onBlur={onBlur}
-      />
+      <input {...rest} id={id} value={value} type={type} className={`${styles.Input} ${inputClassName}`} />
     </>
   );
 };
