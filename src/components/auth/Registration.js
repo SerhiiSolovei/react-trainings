@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import firebase from 'firebase/app';
 
 import { validateEmail, validatePassword, lowerCaseLetters, upperCaseLetters, numbers } from './utils';
@@ -8,137 +8,121 @@ import PasswordMessage from './PasswordMessage';
 
 import styles from './styles.module.scss';
 
-class Registration extends React.Component {
-  state = {
-    email: '',
-    password: '',
-    confirmPassword: '',
-    showPassword: false,
-    showPasswordConfirmField: false,
-    validPassword: false,
-    inputPassword: false,
+const Registration = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPasswordField, changePasswordVisibility] = useState(false);
+  const [showConfirmPasswordField, changeConfirmPasswordVisibility] = useState(false);
+  const [passwordInputOnFocus, changePasswordInputOnFocus] = useState(false);
+  const [validPassword, checkValidation] = useState(false);
+  const [validationDetails, checkValidationDetails] = useState({
     containLowerCaseLetter: false,
     containUpperCaseLetter: false,
     containNumber: false,
     containMinCharNumber: false,
-  };
+  });
 
-  registerUser = () => {
-    if (!validateEmail(this.state.email)) {
+  const registerUser = () => {
+    if (!validateEmail(email)) {
       alert('Неверный адрес почтового ящика');
       return;
     }
 
-    if (!this.state.password.match(validatePassword)) {
+    if (!password.match(validatePassword)) {
       alert('Ошибочно созданный пароль');
       return;
     }
 
-    if (this.state.password !== this.state.confirmPassword) {
+    if (password !== confirmPassword) {
       alert('Неверное подтверждение пароля! Повторите еще раз!');
       return;
     }
 
     firebase
       .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
         console.log('user', userCredential, userCredential.user);
         // Signed in
         // ...
-        this.setState(prevState => ({
-          ...prevState,
-          email: '',
-          password: '',
-          confirmPassword: '',
-        }));
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
       })
       .catch(error => {
         alert(`ERROR: ${error.message}`);
       });
   };
 
-  togglePasswordVisibility = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      showPassword: this.state.showPassword ? false : true,
+  const validationChecking = () => {
+    checkValidation(password.match(validatePassword) ? true : false);
+    checkValidationDetails(() => ({
+      containLowerCaseLetter: password.match(lowerCaseLetters) ? true : false,
+      containUpperCaseLetter: password.match(upperCaseLetters) ? true : false,
+      containNumber: password.match(numbers) ? true : false,
+      containMinCharNumber: password.length >= 6 ? true : false,
     }));
   };
 
-  togglePasswordConfirmVisibility = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      showPasswordConfirmField: this.state.showPasswordConfirmField ? false : true,
-    }));
-  };
+  return (
+    <div className={styles.Form}>
+      <Input
+        label={'Почта'}
+        id={'email'}
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        placeholder={'example@email.com'}
+        className={styles.Input}
+      />
 
-  validationChecking = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      validPassword: this.state.password.match(validatePassword) ? true : false,
-      containLowerCaseLetter: this.state.password.match(lowerCaseLetters) ? true : false,
-      containUpperCaseLetter: this.state.password.match(upperCaseLetters) ? true : false,
-      containNumber: this.state.password.match(numbers) ? true : false,
-      containMinCharNumber: this.state.password.length >= 6 ? true : false,
-    }));
-  };
+      <PasswordMessage state={validationDetails} passwordInputOnFocus={passwordInputOnFocus} />
 
-  render() {
-    return (
-      <div className={styles.Form}>
-        <Input
-          label={'Почта'}
-          id={'email'}
-          value={this.state.email}
-          onChange={e => this.setState({ email: e.target.value })}
-          placeholder={'example@email.com'}
-          className={styles.Input}
-        />
-
-        <PasswordMessage state={this.state} />
-
-        <Input
-          label={'Пароль'}
-          id={'password'}
-          value={this.state.password}
-          type={this.state.showPassword ? 'text' : 'password'}
-          onChange={e => this.setState({ password: e.target.value })}
-          onKeyUp={this.validationChecking}
-          onFocus={() => this.setState({ inputPassword: true })}
-          onBlur={() => this.setState({ inputPassword: false })}
-          placeholder={'Пароль...'}
-          inputClassName={this.state.validPassword ? styles.ValidPassword : styles.InvalidPassword}
-        />
-        <div className={styles.Checkbox}>
-          <input type="checkbox" onClick={this.togglePasswordVisibility} />
-          Показать пароль
-        </div>
-
-        <Input
-          label={'Подтвердите Пароль'}
-          id={'confirmPassword'}
-          value={this.state.confirmPassword}
-          type={this.state.showPasswordConfirmField ? 'text' : 'password'}
-          onChange={e => this.setState({ confirmPassword: e.target.value })}
-          placeholder={'Подтвердите Пароль...'}
-          inputClassName={styles.Input}
-        />
-        <div className={styles.Checkbox}>
-          <input type="checkbox" onClick={this.togglePasswordConfirmVisibility} />
-          Показать пароль
-        </div>
-
-        <button
-          onClick={() => {
-            this.registerUser();
-            this.setState(prevState => ({ ...prevState, password: '', confirmPassword: '' }));
-          }}
-        >
-          Зарегестрироваться
-        </button>
+      <Input
+        label={'Пароль'}
+        id={'password'}
+        value={password}
+        type={showPasswordField ? 'text' : 'password'}
+        onChange={e => setPassword(e.target.value)}
+        onKeyUp={validationChecking}
+        onFocus={() => changePasswordInputOnFocus(true)}
+        onBlur={() => changePasswordInputOnFocus(false)}
+        placeholder={'Пароль...'}
+        inputClassName={validPassword ? styles.ValidPassword : styles.InvalidPassword}
+      />
+      <div className={styles.Checkbox}>
+        <input type="checkbox" onClick={() => changePasswordVisibility(showPasswordField ? false : true)} />
+        Показать пароль
       </div>
-    );
-  }
-}
+
+      <Input
+        label={'Подтвердите Пароль'}
+        id={'confirmPassword'}
+        value={confirmPassword}
+        type={showConfirmPasswordField ? 'text' : 'password'}
+        onChange={e => setConfirmPassword(e.target.value)}
+        placeholder={'Подтвердите Пароль...'}
+        inputClassName={styles.Input}
+      />
+      <div className={styles.Checkbox}>
+        <input
+          type="checkbox"
+          onClick={() => changeConfirmPasswordVisibility(showConfirmPasswordField ? false : true)}
+        />
+        Показать пароль
+      </div>
+
+      <button
+        onClick={() => {
+          registerUser();
+          setPassword('');
+          setConfirmPassword('');
+        }}
+      >
+        Зарегестрироваться
+      </button>
+    </div>
+  );
+};
 
 export default Registration;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as Routes from '../constants/Routes';
 import ConfirmMessage from './ConfirmMessage';
@@ -8,99 +8,72 @@ import { FirebaseContext } from './services/FirebaseProvider';
 
 import styles from './PostList.module.scss';
 
-class PostList extends React.Component {
-  state = {
-    searchValue: '',
-    selectedAuthor: '',
-    showConfirmMessage: false,
-    postId: null,
-  };
+const PostList = ({ posts, deletePost }) => {
+  const [searchValue, setSearchValue] = useState('');
+  const [selectedAuthor, setSelectedAuthor] = useState('');
+  const [showConfirmMessage, confirmMessageToggle] = useState(false);
+  const [postId, setPostId] = useState(null);
 
-  showConfirm = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      showConfirmMessage: true,
-    }));
-  };
+  const postsByAuthor = selectedAuthor !== '' ? posts.filter(post => post.author === selectedAuthor) : posts;
+  const filteredValues = postsByAuthor.filter(post =>
+    post.title.toLowerCase().includes(searchValue.toLowerCase().trim()),
+  );
 
-  closeConfirm = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      showConfirmMessage: false,
-    }));
-  };
-  render() {
-    const { posts, deletePost } = this.props;
+  const closeConfirm = () => confirmMessageToggle(false);
 
-    const postsByAuthor =
-      this.state.selectedAuthor !== '' ? posts.filter(post => post.author === this.state.selectedAuthor) : posts;
-    const filteredValues = postsByAuthor.filter(post =>
-      post.title.toLowerCase().includes(this.state.searchValue.toLowerCase().trim()),
-    );
+  return (
+    <section className={styles.PostsSection}>
+      <Input value={searchValue} onChange={e => setSearchValue(e.target.value)} placeholder={'Поиск по заголовку'} />
+      <select
+        value={selectedAuthor}
+        onChange={e => {
+          setSelectedAuthor(e.target.value);
+          setSearchValue('');
+        }}
+      >
+        <option value="">--Пожалуйста выберите Автора--</option>
+        <option value="livermon">Livermon</option>
+        <option value="board-game-bastard">Board Game Bastard</option>
+      </select>
 
-    return (
-      <section className={styles.PostsSection}>
-        <Input
-          value={this.state.searchValue}
-          onChange={e => this.setState({ searchValue: e.target.value })}
-          placeholder={'Поиск по заголовку'}
-        />
-        <select
-          value={this.state.selectedAuthor}
-          onChange={e => this.setState({ selectedAuthor: e.target.value, searchValue: '' })}
-        >
-          <option value="">--Пожалуйста выберите Автора--</option>
-          <option value="livermon">Livermon</option>
-          <option value="board-game-bastard">Board Game Bastard</option>
-        </select>
-
-        {filteredValues.length > 0 ? (
-          filteredValues.map(post => {
-            return (
-              <article>
-                <h3>
-                  {post.title}
-                  <FirebaseContext.Consumer>
-                    {({ authenticated }) =>
-                      authenticated && (
-                        <>
-                          <Link to={Routes.EDIT_POST.replace(':id', post.id)}>
-                            <span className={styles.EditLink}>изменить</span>
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              this.setState(prevState => ({
-                                ...prevState,
-                                postId: post.id,
-                              }));
-                              this.showConfirm();
-                            }}
-                          >
-                            удалить
-                          </button>
-                        </>
-                      )
-                    }
-                  </FirebaseContext.Consumer>
-                </h3>
-                <time dateTime="">---</time>
-                <p>{post.content}</p>
-              </article>
-            );
-          })
-        ) : (
-          <div>Постов не найдено</div>
-        )}
-        <ConfirmMessage
-          show={this.state.showConfirmMessage}
-          deletePost={deletePost}
-          postId={this.state.postId}
-          closeConfirm={this.closeConfirm}
-        />
-      </section>
-    );
-  }
-}
+      {filteredValues.length > 0 ? (
+        filteredValues.map(post => {
+          return (
+            <article>
+              <h3>
+                {post.title}
+                <FirebaseContext.Consumer>
+                  {({ authenticated }) =>
+                    authenticated && (
+                      <>
+                        <Link to={Routes.EDIT_POST.replace(':id', post.id)}>
+                          <span className={styles.EditLink}>изменить</span>
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPostId(post.id);
+                            confirmMessageToggle(true);
+                          }}
+                        >
+                          удалить
+                        </button>
+                      </>
+                    )
+                  }
+                </FirebaseContext.Consumer>
+              </h3>
+              <time dateTime="">---</time>
+              <p>{post.content}</p>
+            </article>
+          );
+        })
+      ) : (
+        <div>Постов не найдено</div>
+      )}
+      <ConfirmMessage show={showConfirmMessage} deletePost={deletePost} postId={postId} closeConfirm={closeConfirm} />
+    </section>
+  );
+};
 
 export default PostList;
