@@ -1,9 +1,15 @@
+import { lowerCaseLetters, upperCaseLetters, numbers } from './utils';
+
 import styles from './PasswordMessage.module.scss';
 
-const PasswordMessage = ({ state, passwordInputOnFocus }) => {
-  const { containLowerCaseLetter, containUpperCaseLetter, containNumber, containMinCharNumber } = state;
-  if (passwordInputOnFocus === true) {
-    return (
+const PasswordMessage = ({ password, isVisible }) => {
+  const containLowerCaseLetter = password.match(lowerCaseLetters) ? true : false;
+  const containUpperCaseLetter = password.match(upperCaseLetters) ? true : false;
+  const containNumber = password.match(numbers) ? true : false;
+  const containMinCharNumber = password.length >= 6 ? true : false;
+
+  return (
+    isVisible && (
       <div className={styles.Message}>
         <h4 className={styles.Header}>Пароль должен содержать минимум:</h4>
         <div className={containLowerCaseLetter ? styles.Valid : styles.Invalid}>
@@ -15,9 +21,8 @@ const PasswordMessage = ({ state, passwordInputOnFocus }) => {
         <div className={containNumber ? styles.Valid : styles.Invalid}>Одну цифру</div>
         <div className={containMinCharNumber ? styles.Valid : styles.Invalid}>Шесть символов</div>
       </div>
-    );
-  }
-  return null;
+    )
+  );
 };
 
 export default PasswordMessage;

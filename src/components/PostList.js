@@ -9,17 +9,17 @@ import { FirebaseContext } from './services/FirebaseProvider';
 import styles from './PostList.module.scss';
 
 const PostList = ({ posts, deletePost }) => {
+  const [postId, setPostId] = useState(null);
   const [searchValue, setSearchValue] = useState('');
   const [selectedAuthor, setSelectedAuthor] = useState('');
-  const [showConfirmMessage, confirmMessageToggle] = useState(false);
-  const [postId, setPostId] = useState(null);
+  const [isConfirmMessageVisible, setConfirmMessageVisible] = useState(false);
 
   const postsByAuthor = selectedAuthor !== '' ? posts.filter(post => post.author === selectedAuthor) : posts;
   const filteredValues = postsByAuthor.filter(post =>
     post.title.toLowerCase().includes(searchValue.toLowerCase().trim()),
   );
 
-  const closeConfirm = () => confirmMessageToggle(false);
+  const closeConfirm = () => setConfirmMessageVisible(false);
 
   return (
     <section className={styles.PostsSection}>
@@ -53,7 +53,7 @@ const PostList = ({ posts, deletePost }) => {
                           type="button"
                           onClick={() => {
                             setPostId(post.id);
-                            confirmMessageToggle(true);
+                            setConfirmMessageVisible(true);
                           }}
                         >
                           удалить
@@ -71,7 +71,12 @@ const PostList = ({ posts, deletePost }) => {
       ) : (
         <div>Постов не найдено</div>
       )}
-      <ConfirmMessage show={showConfirmMessage} deletePost={deletePost} postId={postId} closeConfirm={closeConfirm} />
+      <ConfirmMessage
+        show={isConfirmMessageVisible}
+        deletePost={deletePost}
+        postId={postId}
+        closeConfirm={closeConfirm}
+      />
     </section>
   );
 };
