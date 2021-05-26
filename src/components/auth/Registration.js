@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import firebase from 'firebase/app';
 
-import { validateEmail, validatePassword, lowerCaseLetters, upperCaseLetters, numbers } from './utils';
+import { validateEmail, validatePassword } from './utils';
 import Input from '../ReusableComponents/Input';
 
 import PasswordMessage from './PasswordMessage';
@@ -12,16 +12,10 @@ const Registration = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPasswordField, changePasswordVisibility] = useState(false);
-  const [showConfirmPasswordField, changeConfirmPasswordVisibility] = useState(false);
-  const [passwordInputOnFocus, changePasswordInputOnFocus] = useState(false);
-  const [validPassword, checkValidation] = useState(false);
-  const [validationDetails, checkValidationDetails] = useState({
-    containLowerCaseLetter: false,
-    containUpperCaseLetter: false,
-    containNumber: false,
-    containMinCharNumber: false,
-  });
+  const [shouldShowPassword, setShouldShowPassword] = useState(false);
+  const [shouldShowConfirmPassword, setShouldShowConfirmPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const registerUser = () => {
     if (!validateEmail(email)) {
@@ -55,16 +49,6 @@ const Registration = () => {
       });
   };
 
-  const validationChecking = () => {
-    checkValidation(password.match(validatePassword) ? true : false);
-    checkValidationDetails(() => ({
-      containLowerCaseLetter: password.match(lowerCaseLetters) ? true : false,
-      containUpperCaseLetter: password.match(upperCaseLetters) ? true : false,
-      containNumber: password.match(numbers) ? true : false,
-      containMinCharNumber: password.length >= 6 ? true : false,
-    }));
-  };
-
   return (
     <div className={styles.Form}>
       <Input
@@ -76,22 +60,22 @@ const Registration = () => {
         className={styles.Input}
       />
 
-      <PasswordMessage state={validationDetails} passwordInputOnFocus={passwordInputOnFocus} />
+      <PasswordMessage password={password} shouldShow={isPasswordFocused} />
 
       <Input
         label={'Пароль'}
         id={'password'}
         value={password}
-        type={showPasswordField ? 'text' : 'password'}
+        type={shouldShowPassword ? 'text' : 'password'}
+        onKeyUp={() => setIsPasswordValid(password.match(validatePassword) ? true : false)}
         onChange={e => setPassword(e.target.value)}
-        onKeyUp={validationChecking}
-        onFocus={() => changePasswordInputOnFocus(true)}
-        onBlur={() => changePasswordInputOnFocus(false)}
+        onFocus={() => setIsPasswordFocused(true)}
+        onBlur={() => setIsPasswordFocused(false)}
         placeholder={'Пароль...'}
-        inputClassName={validPassword ? styles.ValidPassword : styles.InvalidPassword}
+        inputClassName={isPasswordValid ? styles.ValidPassword : styles.InvalidPassword}
       />
       <div className={styles.Checkbox}>
-        <input type="checkbox" onClick={() => changePasswordVisibility(showPasswordField ? false : true)} />
+        <input type="checkbox" onClick={() => setShouldShowPassword(!shouldShowPassword)} />
         Показать пароль
       </div>
 
@@ -99,16 +83,13 @@ const Registration = () => {
         label={'Подтвердите Пароль'}
         id={'confirmPassword'}
         value={confirmPassword}
-        type={showConfirmPasswordField ? 'text' : 'password'}
+        type={shouldShowConfirmPassword ? 'text' : 'password'}
         onChange={e => setConfirmPassword(e.target.value)}
         placeholder={'Подтвердите Пароль...'}
         inputClassName={styles.Input}
       />
       <div className={styles.Checkbox}>
-        <input
-          type="checkbox"
-          onClick={() => changeConfirmPasswordVisibility(showConfirmPasswordField ? false : true)}
-        />
+        <input type="checkbox" onClick={() => setShouldShowConfirmPassword(!shouldShowConfirmPassword)} />
         Показать пароль
       </div>
 

@@ -1,68 +1,75 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import firebase from 'firebase/app';
+
+import * as Routes from '../../constants/Routes';
 
 import Input from '../ReusableComponents/Input';
 
 import styles from './CreateForm.module.scss';
 
-class CreateForm extends React.Component {
-  state = {
-    title: '',
-    content: '',
-  };
+const CreateForm = ({ createPost, history }) => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
 
-  render() {
-    const { createPost } = this.props;
-    return (
-      <div>
-        <h3>Создать новый пост</h3>
-        <form className={styles.Form}>
-          <Input
-            label={'Заголовок'}
-            id={'title'}
-            value={this.state.title}
-            onChange={e => this.setState({ title: e.target.value })}
-            placeholder={'Введите заголовок...'}
-          />
-          <textarea
-            id="content"
-            value={this.state.content}
-            onChange={e => this.setState({ content: e.target.value })}
-            placeholder="Новый замечательный пост..."
-            className={styles.TextArea}
-          />
+  return (
+    <div>
+      <h3>Создать новый пост</h3>
+      <form className={styles.Form}>
+        <Input
+          label={'Заголовок'}
+          id={'title'}
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder={'Введите заголовок...'}
+        />
+        <textarea
+          id="content"
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          placeholder="Новый замечательный пост..."
+          className={styles.TextArea}
+        />
 
-          <button type="button" onClick={() => this.setState({ title: '', content: '' })}>
-            Отменить
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const newPost = {
-                title: this.state.title,
-                content: this.state.content,
-                author: Math.random() > 0.5 ? 'livermon' : 'board-game-bastard',
-                date: new Date().toString(),
-              };
-              firebase
-                .firestore()
-                .collection('posts')
-                .add(newPost)
-                .then(docRef => {
-                  createPost({
-                    id: docRef.id,
-                    ...newPost,
-                  });
+        <button
+          type="button"
+          onClick={() => {
+            setTitle('');
+            setContent('');
+            history.push(Routes.MAIN);
+          }}
+        >
+          Отменить
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const newPost = {
+              title: title,
+              content: content,
+              author: Math.random() > 0.5 ? 'livermon' : 'board-game-bastard',
+              date: new Date().toString(),
+            };
+            firebase
+              .firestore()
+              .collection('posts')
+              .add(newPost)
+              .then(docRef => {
+                createPost({
+                  id: docRef.id,
+                  ...newPost,
                 });
-              this.setState({ title: '', content: '' });
-            }}
-          >
-            Сохранить
-          </button>
-        </form>
-      </div>
-    );
-  }
-}
+              });
+            setTitle('');
+            setContent('');
+            (title || content) !== '' && history.push(Routes.MAIN);
+          }}
+        >
+          Сохранить
+        </button>
+      </form>
+    </div>
+  );
+};
 
 export default CreateForm;
