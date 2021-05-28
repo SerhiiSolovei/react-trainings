@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import firebase from 'firebase/app';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
@@ -50,12 +50,10 @@ const PublicRoute = ({ component, ...rest }) => {
   );
 };
 
-class App extends React.Component {
-  state = {
-    posts: [],
-  };
+const App = () => {
+  const [posts, setPosts] = useState([]);
 
-  componentDidMount() {
+  useEffect(() => {
     firebase
       .firestore()
       .collection('posts')
@@ -70,74 +68,83 @@ class App extends React.Component {
           });
         });
 
-        this.setState({ posts: postsFromDB });
+        setPosts(postsFromDB);
       });
-  }
+  }, []);
 
-  addNewPost = newPost => {
-    this.setState(prevState => ({
-      ...prevState,
-      posts: [...prevState.posts, newPost],
-    }));
+  const addNewPost = newPost => {
+    setPosts(prevPosts => [...prevPosts, newPost]);
   };
 
-  updatePost = post => {
-    this.setState(prevState => ({
-      ...prevState,
-      posts: prevState.posts.map(oldPost => {
+  const updatePost = post => {
+    // firebase
+    //   .firestore()
+    //   .collection('posts')
+    //   .doc(post)
+    //   .update({
+    //     post: true,
+    //   })
+    //   .then(() => {
+    //     console.log('BLa');
+    //   })
+    //   .catch(() => {
+    //     alert('Error updating document');
+    //   });
+
+    setPosts(prevPosts => {
+      return prevPosts.map(oldPost => {
         if (oldPost.id === post.id) {
           return post;
+        } else {
+          return oldPost;
         }
-        return oldPost;
-      }),
-    }));
+      });
+    });
   };
 
-  deletedPost = postId => {
-    this.setState(prevState => ({
-      ...prevState,
-      posts: prevState.posts.filter(post => postId !== post.id),
-    }));
+  const deletedPost = postId => {
+    firebase
+      .firestore()
+      .collection('posts')
+      .doc(postId)
+      .delete()
+      .then(() => {
+        setPosts(prevPosts => prevPosts.filter(post => postId !== post.id));
+      })
+      .catch(() => {
+        alert('Error removing document');
+      });
   };
 
-  render() {
-    return (
-      <div className={styles.Container}>
-        <Header />
+  return (
+    <div className={styles.Container}>
+      <Header />
+      <Switch>
+        <Route path={Routes.RECOMMENDATIONS}>Рекомендации от профанов</Route>
+        <Route path={Routes.AUTHORS}>Информация об Авторах</Route>
 
-        <Switch>
-          <Route path={Routes.RECOMMENDATIONS}>Рекомендации от профанов</Route>
-          <Route path={Routes.AUTHORS}>Информация об Авторах</Route>
+        <PrivateRoute
+          path={Routes.POST_CREATION}
+          component={props => <CreateForm createPost={addNewPost} {...props} />}
+        />
+        <PrivateRoute
+          path={Routes.EDIT_POST}
+          component={({ match, history }) => {
+            const { id } = match.params;
+            return (
+              <EditForm postId={id} posts={posts} changePost={updatePost} deletePost={deletedPost} history={history} />
+            );
+          }}
+        />
+        <PublicRoute path={Routes.LOGIN} component={() => <Login />} />
+        <PublicRoute path={Routes.REGISTRATION} component={() => <Registration />} />
 
-          <PrivateRoute
-            path={Routes.POST_CREATION}
-            component={props => <CreateForm createPost={this.addNewPost} {...props} />}
-          />
-          <PrivateRoute
-            path={Routes.EDIT_POST}
-            component={({ match, history }) => {
-              const { id } = match.params;
-              return (
-                <EditForm
-                  postId={id}
-                  posts={this.state.posts}
-                  changePost={this.updatePost}
-                  deletePost={this.deletedPost}
-                  history={history}
-                />
-              );
-            }}
-          />
-          <PublicRoute path={Routes.LOGIN} component={() => <Login />} />
-          <PublicRoute path={Routes.REGISTRATION} component={() => <Registration />} />
-
-          <Route path={Routes.MAIN}>
-            <PostList posts={this.state.posts} deletePost={this.deletedPost} />
-          </Route>
-        </Switch>
-      </div>
-    );
-  }
-}
+        <Route path={Routes.MAIN}>
+          <PostList posts={posts} deletePost={deletedPost} />
+        </Route>
+      </Switch>
+    </div>
+  );
+};
 
 export default App;

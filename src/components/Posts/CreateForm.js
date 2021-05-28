@@ -44,25 +44,27 @@ const CreateForm = ({ createPost, history }) => {
         <button
           type="button"
           onClick={() => {
-            const newPost = {
-              title: title,
-              content: content,
-              author: Math.random() > 0.5 ? 'livermon' : 'board-game-bastard',
-              date: new Date().toString(),
-            };
-            firebase
-              .firestore()
-              .collection('posts')
-              .add(newPost)
-              .then(docRef => {
-                createPost({
-                  id: docRef.id,
-                  ...newPost,
+            if (title !== '' && content !== '') {
+              const newPost = {
+                title: title,
+                content: content,
+                author: Math.random() > 0.5 ? 'livermon' : 'board-game-bastard',
+                date: new Date().toString(),
+              };
+              firebase
+                .firestore()
+                .collection('posts')
+                .add(newPost)
+                .then(docRef => {
+                  createPost({
+                    id: docRef.id,
+                    ...newPost,
+                  });
                 });
-              });
-            setTitle('');
-            setContent('');
-            (title || content) !== '' && history.push(Routes.MAIN);
+              setTitle('');
+              setContent('');
+            }
+            history.push(Routes.MAIN);
           }}
         >
           Сохранить
