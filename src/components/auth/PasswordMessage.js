@@ -21,8 +21,9 @@ const PasswordMessage = ({ password, shouldShow }) => {
         <div className={containNumber ? styles.Valid : styles.Invalid}>Одну цифру</div>
         <div className={containMinCharNumber ? styles.Valid : styles.Invalid}>Шесть символов</div>
       </div>
-    )
-  );
+    );
+  }
+  return null;
 };
 
 export default PasswordMessage;

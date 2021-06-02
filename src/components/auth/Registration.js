@@ -12,6 +12,13 @@ const Registration = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [shouldShowPassword, setShouldShowPassword] = useState(false);
+  const [shouldShowConfirmPassword, setShouldShowConfirmPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+
+  const registerUser = () => {
     if (!validateEmail(email)) {
       alert('Неверный адрес почтового ящика');
       return;
