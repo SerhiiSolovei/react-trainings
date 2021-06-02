@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import firebase from 'firebase/app';
 import { initializeFirebaseApp } from './firebase';
 
 export const FirebaseContext = React.createContext({
-  test: 'ok',
+  authenticated: false,
+  user: null,
+  loading: true,
 });
+
+export function useFirebase() {
+  return useContext(FirebaseContext);
+}
 
 class FirebaseProvider extends React.Component {
   constructor(props) {

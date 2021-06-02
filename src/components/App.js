@@ -12,41 +12,37 @@ import EditForm from './Posts/EditForm';
 import Login from './auth/Login';
 import Registration from './auth/Registration';
 
-import { FirebaseContext } from './services/FirebaseProvider';
+import { useFirebase } from './services/FirebaseProvider';
 
 import styles from './App.module.scss';
 
 const PrivateRoute = ({ component, ...rest }) => {
+  const { authenticated } = useFirebase();
+
   return (
-    <FirebaseContext.Consumer>
-      {({ authenticated }) => (
-        <Route
-          {...rest}
-          render={props =>
-            authenticated === true ? (
-              component(props)
-            ) : (
-              <Redirect to={{ pathname: Routes.LOGIN, state: { from: props.location } }} />
-            )
-          }
-        />
-      )}
-    </FirebaseContext.Consumer>
+    <Route
+      {...rest}
+      render={props =>
+        authenticated === true ? (
+          component(props)
+        ) : (
+          <Redirect to={{ pathname: Routes.LOGIN, state: { from: props.location } }} />
+        )
+      }
+    />
   );
 };
 
 const PublicRoute = ({ component, ...rest }) => {
+  const { authenticated, loading } = useFirebase();
+
   return (
-    <FirebaseContext.Consumer>
-      {({ authenticated, loading }) => (
-        <Route
-          {...rest}
-          render={props =>
-            authenticated === false && loading === false ? component(props) : <Redirect to={Routes.MAIN} />
-          }
-        />
-      )}
-    </FirebaseContext.Consumer>
+    <Route
+      {...rest}
+      render={props =>
+        authenticated === false && loading === false ? component(props) : <Redirect to={Routes.MAIN} />
+      }
+    />
   );
 };
 
@@ -76,20 +72,18 @@ const App = () => {
     setPosts(prevPosts => [...prevPosts, newPost]);
   };
 
-  const updatePost = post => {
-    // firebase
-    //   .firestore()
-    //   .collection('posts')
-    //   .doc(post)
-    //   .update({
-    //     post: true,
-    //   })
-    //   .then(() => {
-    //     console.log('BLa');
-    //   })
-    //   .catch(() => {
-    //     alert('Error updating document');
-    //   });
+  const updatePost = ({ id: postId, ...post }) => {
+    firebase
+      .firestore()
+      .collection('posts')
+      .doc(postId)
+      .update(post)
+      .then(() => {
+        console.log('BLa');
+      })
+      .catch(() => {
+        alert('Error updating document');
+      });
 
     setPosts(prevPosts => {
       return prevPosts.map(oldPost => {
@@ -102,7 +96,7 @@ const App = () => {
     });
   };
 
-  const deletedPost = postId => {
+  const deletePost = postId => {
     firebase
       .firestore()
       .collection('posts')
@@ -132,7 +126,7 @@ const App = () => {
           component={({ match, history }) => {
             const { id } = match.params;
             return (
-              <EditForm postId={id} posts={posts} changePost={updatePost} deletePost={deletedPost} history={history} />
+              <EditForm postId={id} posts={posts} changePost={updatePost} deletePost={deletePost} history={history} />
             );
           }}
         />
@@ -140,7 +134,7 @@ const App = () => {
         <PublicRoute path={Routes.REGISTRATION} component={() => <Registration />} />
 
         <Route path={Routes.MAIN}>
-          <PostList posts={posts} deletePost={deletedPost} />
+          <PostList posts={posts} deletePost={deletePost} />
         </Route>
       </Switch>
     </div>
