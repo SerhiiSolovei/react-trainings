@@ -12,17 +12,10 @@ const Registration = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  const [isPasswordVisible, setPasswordVisibility] = useState(false);
-  const [isConfirmPasswordVisible, setConfirmPasswordVisibility] = useState(false);
-  const [isPasswordFocused, setPasswordFocused] = useState(false);
-
-  const registerUser = () => {
     if (!validateEmail(email)) {
       alert('Неверный адрес почтового ящика');
       return;
     }
-
     if (!password.match(validatePassword)) {
       alert('Ошибочно созданный пароль');
       return;
@@ -49,8 +42,6 @@ const Registration = () => {
       });
   };
 
-  const isPasswordValid = password.match(validatePassword);
-
   return (
     <div className={styles.Form}>
       <Input
@@ -62,21 +53,22 @@ const Registration = () => {
         className={styles.Input}
       />
 
-      <PasswordMessage password={password} isVisible={isPasswordFocused} />
+      <PasswordMessage password={password} shouldShow={isPasswordFocused} />
 
       <Input
         label={'Пароль'}
         id={'password'}
         value={password}
-        type={isPasswordVisible ? 'text' : 'password'}
+        type={shouldShowPassword ? 'text' : 'password'}
+        onKeyUp={() => setIsPasswordValid(password.match(validatePassword) ? true : false)}
         onChange={e => setPassword(e.target.value)}
-        onFocus={() => setPasswordFocused(true)}
-        onBlur={() => setPasswordFocused(false)}
+        onFocus={() => setIsPasswordFocused(true)}
+        onBlur={() => setIsPasswordFocused(false)}
         placeholder={'Пароль...'}
         inputClassName={isPasswordValid ? styles.ValidPassword : styles.InvalidPassword}
       />
       <div className={styles.Checkbox}>
-        <input type="checkbox" onClick={() => setPasswordVisibility(!isPasswordVisible)} />
+        <input type="checkbox" onClick={() => setShouldShowPassword(!shouldShowPassword)} />
         Показать пароль
       </div>
 
@@ -84,13 +76,13 @@ const Registration = () => {
         label={'Подтвердите Пароль'}
         id={'confirmPassword'}
         value={confirmPassword}
-        type={isConfirmPasswordVisible ? 'text' : 'password'}
+        type={shouldShowConfirmPassword ? 'text' : 'password'}
         onChange={e => setConfirmPassword(e.target.value)}
         placeholder={'Подтвердите Пароль...'}
         inputClassName={styles.Input}
       />
       <div className={styles.Checkbox}>
-        <input type="checkbox" onClick={() => setConfirmPasswordVisibility(!isConfirmPasswordVisible)} />
+        <input type="checkbox" onClick={() => setShouldShowConfirmPassword(!shouldShowConfirmPassword)} />
         Показать пароль
       </div>
 

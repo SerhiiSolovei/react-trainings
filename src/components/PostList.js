@@ -12,14 +12,14 @@ const PostList = ({ posts, deletePost }) => {
   const [postId, setPostId] = useState(null);
   const [searchValue, setSearchValue] = useState('');
   const [selectedAuthor, setSelectedAuthor] = useState('');
-  const [isConfirmMessageVisible, setConfirmMessageVisible] = useState(false);
+  const [shouldShowConfirmMessage, setShouldShowConfirmMessage] = useState(false);
 
   const postsByAuthor = selectedAuthor !== '' ? posts.filter(post => post.author === selectedAuthor) : posts;
   const filteredValues = postsByAuthor.filter(post =>
     post.title.toLowerCase().includes(searchValue.toLowerCase().trim()),
   );
 
-  const closeConfirm = () => setConfirmMessageVisible(false);
+  const closeConfirm = () => setShouldShowConfirmMessage(false);
 
   return (
     <section className={styles.PostsSection}>
@@ -53,7 +53,7 @@ const PostList = ({ posts, deletePost }) => {
                           type="button"
                           onClick={() => {
                             setPostId(post.id);
-                            setConfirmMessageVisible(true);
+                            setShouldShowConfirmMessage(true);
                           }}
                         >
                           удалить
@@ -72,7 +72,7 @@ const PostList = ({ posts, deletePost }) => {
         <div>Постов не найдено</div>
       )}
       <ConfirmMessage
-        show={isConfirmMessageVisible}
+        show={shouldShowConfirmMessage}
         deletePost={deletePost}
         postId={postId}
         closeConfirm={closeConfirm}
