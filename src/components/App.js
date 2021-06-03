@@ -69,7 +69,19 @@ const App = () => {
   }, []);
 
   const addNewPost = newPost => {
-    setPosts(prevPosts => [...prevPosts, newPost]);
+    firebase
+      .firestore()
+      .collection('posts')
+      .add(newPost)
+      .then(docRef => {
+        setPosts(prevPost => [
+          ...prevPost,
+          {
+            id: docRef.id,
+            ...newPost,
+          },
+        ]);
+      });
   };
 
   const updatePost = ({ id: postId, ...post }) => {
@@ -119,7 +131,7 @@ const App = () => {
 
         <PrivateRoute
           path={Routes.POST_CREATION}
-          component={props => <CreateForm createPost={addNewPost} {...props} />}
+          component={props => <CreateForm addNewPost={addNewPost} {...props} />}
         />
         <PrivateRoute
           path={Routes.EDIT_POST}

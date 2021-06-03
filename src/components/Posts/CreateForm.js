@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 
-import firebase from 'firebase/app';
-
 import * as Routes from '../../constants/Routes';
 
 import Input from '../ReusableComponents/Input';
 
 import styles from './CreateForm.module.scss';
 
-const CreateForm = ({ createPost, history }) => {
+const CreateForm = ({ addNewPost, history }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -51,16 +49,7 @@ const CreateForm = ({ createPost, history }) => {
                 author: Math.random() > 0.5 ? 'livermon' : 'board-game-bastard',
                 date: new Date().toString(),
               };
-              firebase
-                .firestore()
-                .collection('posts')
-                .add(newPost)
-                .then(docRef => {
-                  createPost({
-                    id: docRef.id,
-                    ...newPost,
-                  });
-                });
+              addNewPost(newPost);
               setTitle('');
               setContent('');
             }
