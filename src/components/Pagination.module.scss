@@ -1,17 +1,18 @@
 /* Pagination links */
-.Pagination a {
+.Pagination span {
   color: black;
   float: left;
   padding: 8px 16px;
   text-decoration: none;
   transition: background-color .3s;
+  cursor: pointer;
 }
 
 /* Style the active/current link */
-.Pagination a.Active {
+.Pagination span.Active {
   background-color: dodgerblue;
   color: white;
 }
 
 /* Add a grey background color on mouse-over */
-.Pagination a:hover:not(.Active) {background-color: #ddd;}
+.Pagination span:hover:not(.Active) {background-color: #ddd;}

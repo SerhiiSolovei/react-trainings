@@ -1,36 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
-import * as Routes from '../constants/Routes';
 import styles from './Pagination.module.scss';
 
-const Pagination = ({ totalPages, currentPageNumber }) => {
+const Pagination = ({ totalPages, currentPage, selectNewPage }) => {
   let i = 1;
   const pagesArr = [];
   while (i <= totalPages) {
     pagesArr.push(i);
     i++;
   }
+
   return (
     <div className={styles.Pagination}>
-      <Link to={Routes.CURRENT_PAGE.replace(':id', currentPageNumber > 1 ? currentPageNumber - 1 : currentPageNumber)}>
+      <span
+        onClick={() => {
+          const newPage = currentPage >= 1 ? currentPage - 1 : currentPage;
+
+          selectNewPage(newPage);
+        }}
+      >
         &laquo;
-      </Link>
+      </span>
       {pagesArr.map(num => {
         return (
-          <Link to={Routes.CURRENT_PAGE.replace(':id', num)} className={num === currentPageNumber && styles.Active}>
+          <span className={num - 1 === currentPage && styles.Active} onClick={() => selectNewPage(num - 1)}>
             {num}
-          </Link>
+          </span>
         );
       })}
-      <Link
-        to={Routes.CURRENT_PAGE.replace(
-          ':id',
-          currentPageNumber < totalPages ? currentPageNumber + 1 : currentPageNumber,
-        )}
+      <span
+        onClick={() => {
+          const newPage = currentPage < totalPages - 1 ? currentPage + 1 : currentPage;
+          selectNewPage(newPage);
+        }}
       >
         &raquo;
-      </Link>
+      </span>
     </div>
   );
 };

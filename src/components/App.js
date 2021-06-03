@@ -9,8 +9,6 @@ import PostList from './PostList';
 import CreateForm from './Posts/CreateForm';
 import EditForm from './Posts/EditForm';
 
-import Pagination from './Pagination';
-
 import Login from './auth/Login';
 import Registration from './auth/Registration';
 
@@ -50,11 +48,6 @@ const PublicRoute = ({ component, ...rest }) => {
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [currentPage, setCurrentPage] = useState('');
-  const postsPerPage = 5;
-  const totalPages = Math.ceil(posts.length / postsPerPage);
-
-  console.log(currentPage);
 
   useEffect(() => {
     firebase
@@ -141,19 +134,7 @@ const App = () => {
         <PublicRoute path={Routes.REGISTRATION} component={() => <Registration />} />
 
         <Route path={Routes.MAIN}>
-          <PostList
-            posts={posts.slice(currentPage * postsPerPage, currentPage * postsPerPage + postsPerPage)}
-            deletePost={deletePost}
-          />
-          <Route
-            path={Routes.CURRENT_PAGE}
-            strict
-            render={({ match }) => {
-              const { id } = match.params;
-              setCurrentPage(id - 1);
-              return <Pagination totalPages={totalPages} currentPageNumber={Number(id)} />;
-            }}
-          />
+          <PostList posts={posts} deletePost={deletePost} />
         </Route>
       </Switch>
     </div>
